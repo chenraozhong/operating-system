@@ -55,22 +55,21 @@ void Memory::init() {
 		exit(1);
 	}
 	string str;
-	stringstream buff;
 	getline(file, str);
 	while (!file.eof()) {
 		int pos1=str.find(" ", 0);
 		int begin;
-		buff<< str.substr(0, pos1);
-		buff >> begin;
-		int pos2 = str.find(" ", pos1+1);
-		string name = str.substr(pos1, pos2-pos1);//pos2代表的是拷贝的个数，而非位置
-		buff<<str.substr(pos2, str.size()-pos2);
-		int size;
-		buff >> size;
+		stringstream buff1;
 		Memory_node node;
+		buff1<< str.substr(0, pos1);
+		buff1>> begin;
+		int pos2 = str.find(" ", pos1+1);
+		string name = str.substr(pos1+1, pos2-pos1);//pos2代表的是拷贝的个数，而非位置
+		stringstream buff2;
+		buff2<<str.substr(pos2+1, str.size()-pos2);
+		buff2 >> node.size;
 		node.begin = begin;
 		node.name = name;
-		node.size = size;
 		memory_list.push_back(node);
 		getline(file, str);
 	}
@@ -117,19 +116,21 @@ void Leisure::init() {
 		exit(1);
 	}
 	string str;
-	stringstream buff;
 	getline(file, str);
-	while (!file.eof()) {
+	while (!file.eof()){
+		stringstream buff1;
 		int pos1 = str.find(" ", 0);
 		Leisure_node node;
-		buff <<str.substr(0, pos1);
-		buff >> node.begin;
+		buff1 <<str.substr(0, pos1);
+		buff1 >> node.begin;
 		int pos2 = str.find(" ", pos1 + 1);
-		buff<< str.substr(pos1, pos2 - pos1);
-		buff >> node.size;
+		stringstream buff2;
+		buff2<<str.substr(pos1+1, pos2 - pos1);
+		buff2 >> node.size;
 		string state = str.substr(pos2, str.size() - pos2);
 		node.state = state;
 		leisure_list.push_back(node);
+		getline(file, str);
 		getline(file, str);
 	}
 	file.close();
@@ -201,6 +202,8 @@ void test::init() {
 int main() {
 	test t;
 	t.init();
+	t.show_mem();
+	t.show_lei();
 	t.apply();
 	t.show_mem();
 	return 0;
