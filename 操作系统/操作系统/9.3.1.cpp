@@ -91,21 +91,24 @@ void Leisure::show() {
 
 int Leisure::getbegin(job j)
 {
+	int begin;
 	int i;
 	int jj = leisure_list.size();
 	for (i = 0; i < leisure_list.size(); i++)
 	{
 		if (leisure_list[i].state=="空表目") return -1;
-		if (leisure_list[i].size > j.size) break;
+		if (leisure_list[i].size >= j.size) break;
 	}
+	begin = leisure_list[i].begin;
 	if (leisure_list[i].size == j.size)//如果空闲区长度和作业大小相等
-	{
+	{	
 		leisure_list.erase(leisure_list.begin() + i);
 	}
 	else {
 		leisure_list[i].begin += j.size;
 		leisure_list[i].size -= j.size;
 	}
+	return begin;
 }
 
 void Leisure::init() {
@@ -131,7 +134,7 @@ void Leisure::init() {
 		node.state = state;
 		leisure_list.push_back(node);
 		getline(file, str);
-		getline(file, str);
+		
 	}
 	file.close();
 }
@@ -143,7 +146,7 @@ public:
 
 	Leisure lei;
 	void init();
-	void apply();
+	void apply();//分配函数
 	void update_memory(int begin,job j);
 	void show_mem();
 	void show_lei();
@@ -173,6 +176,7 @@ void test::update_memory(int begin, job j) {
 		Memory_node node;
 		node.begin = begin2;
 		node.size = size2;
+		node.name = "空闲区";
 		mem.memory_list.insert(mem.memory_list.begin() + i + 1, node);
 	}
 }
@@ -206,5 +210,6 @@ int main() {
 	t.show_lei();
 	t.apply();
 	t.show_mem();
+	t.show_lei();
 	return 0;
 }
