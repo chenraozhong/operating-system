@@ -4,6 +4,7 @@
 #include<string>
 #include<fstream>
 #include<sstream>
+#include<Windows.h>
 using namespace std;
 
 //作业
@@ -58,7 +59,7 @@ void Memory::update_memory(int begin, job j) {
 }
 
 void Memory::show() {
-	cout << "起始地址      作业名      作业大小" << endl;
+	cout << "起始地址(KB)  作业名      作业大小(KB)" << endl;
 	for (int i = 0; i < memory_list.size(); i++) {
 		cout.setf(ios::left);
 		cout.width(14);
@@ -111,18 +112,23 @@ public:
 };
 
 void Leisure::show() {
-	cout << "起始地址      长度           状态" << endl;
+	cout << "起始地址(KB)  长度(KB)        状态" << endl;
 	for (int i = 0; i < leisure_list.size(); i++)
 	{
-		cout.setf(ios::left);
-		cout.width(14);
-		cout << leisure_list[i].begin; 
-		cout.setf(ios::left);
-		cout.width(14);
-		cout << leisure_list[i].size; 
-		cout.setf(ios::left);
-		cout.width(14);
-		cout << leisure_list[i].state << endl;
+		if (leisure_list[i].state.find("空表目") == string::npos) {
+			cout.setf(ios::left);
+			cout.width(14);
+			cout << leisure_list[i].begin;
+			cout.setf(ios::left);
+			cout.width(14);
+			cout << leisure_list[i].size;
+			cout.setf(ios::left);
+			cout.width(14);
+			cout << leisure_list[i].state << endl;
+		}
+		else {
+			cout << "                             空表目" << endl;
+		}
 	}
 		
 }
@@ -289,7 +295,8 @@ void test::recycle() {
 		update_mem(name);
 	}
 	if (!wait.empty()) {
-		cout << wait[0].name << "等待装入，将其唤醒" << endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED|FOREGROUND_BLUE);
+		cout << wait[0].name << "处于等待状态，将其唤醒" << endl;
 		wake_up = true;
 		apply();
 	}
@@ -308,22 +315,34 @@ void test::apply() {
 	if (wake_up) {
 		j = wait[0];
 		wait.erase(wait.begin());
+		wake_up = false;
 	}
 	else {
 		cout << "请输入申请作业的名字:" << endl;
 		cin >> j.name;
+		for(int i=0;i<mem.memory_list.size();i++)
+			if (mem.memory_list[i].name.find(j.name) != string::npos) {
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED);
+				cout << j.name << "已经存在于主存中，无需再次申请" << endl;
+				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+				return;
+			}
 		cout << "请输入作业的大小" << endl;
 		cin >> j.size;
 	}
 	int begin = lei.getbegin(j);//从空闲区中找到作业应该插入的起始位置，如果begin为-1，则表示作业进入等待，将其插入wait队列
 	if (begin == -1) {
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE) ,FOREGROUND_RED);
 		cout << "无合适大小的空闲区，作业进入等待队列" << endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),FOREGROUND_RED|FOREGROUND_BLUE|FOREGROUND_GREEN);
 		wait.push_back(j);
 	}
 	else
 	{
 		mem.update_memory(begin,j);
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
 		cout << "作业成功装入" << endl;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 	}
 }
 
