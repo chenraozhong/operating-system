@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\第九章">
+      <UniqueIdentifier>{e35a6e09-642d-4f2c-8a36-5bec537e1295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\第十章">
+      <UniqueIdentifier>{33a9af84-c2a4-4b7a-a684-73d06c6010b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -29,11 +35,14 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="9.3.2.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="第九章\9.3.1.cpp">
+      <Filter>源文件\第九章</Filter>
     </ClCompile>
-    <ClCompile Include="9.3.1.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="第九章\9.3.2.cpp">
+      <Filter>源文件\第九章</Filter>
+    </ClCompile>
+    <ClCompile Include="第十章\10.3.1.cpp">
+      <Filter>源文件\第十章</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
