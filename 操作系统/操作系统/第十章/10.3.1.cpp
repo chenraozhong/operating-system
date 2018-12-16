@@ -14,14 +14,22 @@ typedef struct Table {
 	int fix_flag;//修改位
 }Table;
 
+typedef struct Resident {
+	int lump_num;//块号
+	int page_num;//页号
+};
+
 class Add {//地址变换
 private:
 	vector<Table> page_table;
+	vector<Resident> resident_set;//驻留集，大小为4
 	string order;//指令(长度为9)
 	int page_num;//根据指令得到的页号
 	int page_offset;//页内偏移量
 	int abs_add;//绝对地址
 public:
+	void show_page();//输出页表
+	void show_resident();//输出驻留集
 	void init();//对页表进行初始化操作
 	void test();//测试函数
 	void get_pagenum();//得到页号
@@ -31,6 +39,41 @@ public:
 	void get_absadd();//得到绝对地址
 };
 
+void Add::show_page() {
+	cout << "页号         标志         主存块号       外存地址     修改位" << endl;
+	for (int i = 0; i < page_table.size(); i++) {
+		cout.setf(ios::left);
+		cout.width(14);
+		cout <<i;
+		cout.setf(ios::left);
+		cout.width(14);
+		cout << page_table[i].flag;
+		cout.setf(ios::left);
+		cout.width(14);
+		cout << page_table[i].lump_num ;
+		cout.setf(ios::left);
+		cout.width(14);
+		cout << page_table[i].out_add;
+		cout.setf(ios::left);
+		cout.width(14);
+		cout << page_table[i].fix_flag;
+		cout << endl;
+	}
+}
+
+void Add::show_resident() {
+	cout << "页号       主存块号" << endl;
+	for (int i = 0; i < resident_set.size(); i++) {
+		cout.setf(ios::left);
+		cout.width(14);
+		cout << resident_set[i].page_num;
+		cout.setf(ios::left);
+		cout.width(14);
+		cout << resident_set[i].lump_num;
+		cout << endl;
+	}
+}
+
 void Add::get_absadd() {
 	get_pageoffset();//得到页内偏移地址
 	int lump_num = page_table[page_num].lump_num;
@@ -39,11 +82,61 @@ void Add::get_absadd() {
 }
 
 void Add::interrupt() {
-	cout << "暂时未写" << endl;
+	if (resident_set.size() <4) {//如果该作业还没有分配4个内存块
+		Resident r;
+		r.page_num = page_num;
+		int buff[4] = { 5,8,9,10 };
+		int i = 0;
+		for (; i < 4; i++) {
+			int j = 0;
+			for (; j < resident_set.size(); j++) {
+				if (buff[i] == resident_set[j].lump_num) break;
+			}
+			if (j == resident_set.size()) {//表示buff[i]不在驻留集中
+				break;
+			}
+		}
+		r.lump_num = buff[i];
+		resident_set.insert(resident_set.begin(), r);
+		cout << "调进页" << page_num << endl;
+		page_table[resident_set[0].page_num].flag = 1;//修改页标志
+		page_table[resident_set[0].page_num].lump_num = r.lump_num;//添加块号
+
+	}
+	else {
+		Resident r;
+		r.lump_num= resident_set[3].lump_num;
+		r.page_num = page_num;
+		page_table[resident_set[3].page_num].flag = 0; //将该块原来对应的页标志置为0，表示被置换出内存
+		cout << "将页" << resident_set[3].page_num << "调出内存" << endl;
+		page_table[resident_set[3].page_num].lump_num = 0;
+		page_table[resident_set[3].page_num].fix_flag = 0; //将该块原来对应的修改位标志置为0，表示被置换出内存
+
+		resident_set.erase(resident_set.begin() + 3);//除去驻留集中被调出的页信息
+
+		if (page_table[resident_set[3].page_num].fix_flag) {
+			cout << "调页" << resident_set[3].page_num << "到磁盘" << endl;
+		}
+		cout << "调进页" << page_num << endl;
+
+		resident_set.insert(resident_set.begin(),r);//将所缺页换入
+		page_table[resident_set[0].page_num].flag = 1;//将所缺页标志置为1
+		page_table[resident_set[0].page_num].lump_num = resident_set[0].lump_num;
+	}
 }
 
 bool Add::if_exist() {
-	if (page_table[page_num].flag == 1) return true;
+	if (page_table[page_num].flag == 1) {//最近访问过，将其在驻留集中的位置置顶
+		int i = 0;
+		for (; i < resident_set.size(); i++)
+			if (resident_set[i].page_num == page_num) break;
+		Resident r;
+		r.lump_num = resident_set[i].lump_num;
+		r.page_num = resident_set[i].page_num;
+		resident_set.erase(resident_set.begin() + i);
+		resident_set.insert(resident_set.begin(), r);
+		return true;
+	}
 	else return false;
 }
 
@@ -106,10 +199,9 @@ void Add::test() {
 		cin >> order;
 		get_pagenum();
 		if (!if_exist()) {
-			cout << "该页不在主存中，产生缺页中断";
+			cout << "该页不在主存中，产生缺页中断" << endl;
 			interrupt();
 		}
-		else {
 			get_absadd();
 			cout << "是否是\"存\"指令(1、是   2、否)" << endl;
 			int save;
@@ -117,9 +209,14 @@ void Add::test() {
 			if (save == 1) {
 				page_table[page_num].fix_flag = 1;
 			}
-		}
-		cout << "还有后继指令吗?(1、有    2、无)" << endl;
 		int flag;
+		cout <<endl<< "是否显示页表中内容(1、是     2、否)" << endl;
+		cin >> flag;
+		if (flag == 1) show_page();
+		cout << endl << "是否显示驻留集中的内容（1、是  2、否）" << endl;
+		cin >> flag;
+		if (flag == 1) show_resident();
+		cout << "还有后继指令吗?(1、有    2、无)" << endl;
 		cin >> flag;
 		if (flag == 2) break;
 	}
