@@ -6,6 +6,7 @@
 #include<sstream>
 using namespace std;
 
+#if 0
 typedef struct Table {
 	int table_num;//页号
 	int flag;//标志
@@ -15,8 +16,8 @@ typedef struct Table {
 }Table;
 
 typedef struct Resident {
-	int lump_num;//块号
-	int page_num;//页号
+	int page_num;//块号
+	int lump_num;//页号
 };
 
 class Add {//地址变换
@@ -87,7 +88,7 @@ void Add::interrupt() {
 		r.page_num = page_num;
 		int buff[4] = { 5,8,9,10 };
 		int i = 0;
-		for (; i < 4; i++) {
+		for (; i < 4; i++){
 			int j = 0;
 			for (; j < resident_set.size(); j++) {
 				if (buff[i] == resident_set[j].lump_num) break;
@@ -101,7 +102,6 @@ void Add::interrupt() {
 		cout << "调进页" << page_num << endl;
 		page_table[resident_set[0].page_num].flag = 1;//修改页标志
 		page_table[resident_set[0].page_num].lump_num = r.lump_num;//添加块号
-
 	}
 	else {
 		Resident r;
@@ -112,11 +112,10 @@ void Add::interrupt() {
 		page_table[resident_set[3].page_num].lump_num = 0;
 		page_table[resident_set[3].page_num].fix_flag = 0; //将该块原来对应的修改位标志置为0，表示被置换出内存
 
-		resident_set.erase(resident_set.begin() + 3);//除去驻留集中被调出的页信息
-
 		if (page_table[resident_set[3].page_num].fix_flag) {
 			cout << "调页" << resident_set[3].page_num << "到磁盘" << endl;
 		}
+		resident_set.erase(resident_set.begin() + 3);//除去驻留集中被调出的页信息
 		cout << "调进页" << page_num << endl;
 
 		resident_set.insert(resident_set.begin(),r);//将所缺页换入
@@ -124,6 +123,7 @@ void Add::interrupt() {
 		page_table[resident_set[0].page_num].lump_num = resident_set[0].lump_num;
 	}
 }
+
 
 bool Add::if_exist() {
 	if (page_table[page_num].flag == 1) {//最近访问过，将其在驻留集中的位置置顶
@@ -149,9 +149,9 @@ void Add::get_pagenum() {
 }
 
 void Add::get_pageoffset() {
-	string str = order.substr(3, 9);
+	string str = order.substr(3, order.size());
 	page_offset = 0;
-	for (int i=0; i < 6; i++) {
+	for (int i=0; i < str.size(); i++) {
 		page_offset = page_offset * 2 + (str[i] - 48);
 	}
 }
@@ -225,6 +225,7 @@ void Add::test() {
 int main() {
 	Add a;
 	a.test();
-	
 	return 0;
 }
+
+#endif

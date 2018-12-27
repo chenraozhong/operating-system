@@ -19,6 +19,9 @@
     <Filter Include="源文件\第十章">
       <UniqueIdentifier>{33a9af84-c2a4-4b7a-a684-73d06c6010b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\第八章">
+      <UniqueIdentifier>{49c66613-55ca-46ca-ba26-28e84b68d8e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -43,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="第十章\10.3.1.cpp">
       <Filter>源文件\第十章</Filter>
+    </ClCompile>
+    <ClCompile Include="银行家算法.cpp">
+      <Filter>源文件\第八章</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -354,10 +354,9 @@ void test::init() {
 	lei.init();
 }
 
-int test_1() {
+int main() {
 	test t;
 	t.init();
-	
 	int flag_num;
 	while ( true) {
 		cout << endl<<"********************************************************" << endl;

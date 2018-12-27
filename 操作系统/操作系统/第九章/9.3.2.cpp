@@ -164,7 +164,6 @@ void Leisure::show() {
 	}
 }
 
-
 int Leisure::getbegin(job j)
 {
 	int return_num;
@@ -188,7 +187,6 @@ int Leisure::getbegin(job j)
 	}
 	return return_num;
 }
-
 
 void Leisure::init() {
 	begin = NULL;
@@ -374,7 +372,6 @@ void test::recycle() {
 		apply();
 	}
 }
-
 
 void test::apply() {
 	job j;
