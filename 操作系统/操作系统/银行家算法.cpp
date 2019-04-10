@@ -143,8 +143,7 @@ void test::init_pcb() {
 			pcb[i].allocation_am.push_back(0);
 			string p = sequence[my_map[pcb[i].name]].array[my_map[total_am[j].name]];
 			pcb[i].request_am.push_back(p[0] - 48);
-			if (p.size() != 1)
-				sequence[my_map[pcb[i].name]].array[my_map[total_am[j].name]] = p.substr(1, p.size());
+			if (p.size() != 1) sequence[my_map[pcb[i].name]].array[my_map[total_am[j].name]] = p.substr(1, p.size());
 			else sequence[my_map[pcb[i].name]].array[my_map[total_am[j].name]] = "";
 		}
 	}
@@ -303,7 +302,7 @@ bool test::if_safe(int i) {
 	}
 	//寻找一个系统能满足其需求的进程
 	while (true) {
-		bool flag0 = false;//表示不能找到 
+		bool flag0 = false;//判断是否能找到
 		int process;
 		for (int p = 0; p<pcb.size() && !flag0; p++) {
 			if (p == pcb.size()) break;
@@ -311,6 +310,7 @@ bool test::if_safe(int i) {
 				p++;
 				if (p == pcb.size()) break;
 			}
+			//若上面的while因p==pcb.size()退出，则因退出for循环
 			if (p == pcb.size()) break;
 			bool flag1 = true;//p进程是否能被满足 
 			for (int pp = 0; pp<total_am.size() && flag1; pp++)
@@ -321,7 +321,7 @@ bool test::if_safe(int i) {
 				flag0 = flag1;
 			}
 		}
-		if (flag0) {
+		if (flag0){
 			pcb[process].finish = 1;
 			for (int j = 0; j<total_am.size(); j++)
 				total_am[j].amount += pcb[process].allocation_am[j];
@@ -329,6 +329,7 @@ bool test::if_safe(int i) {
 		else break;
 	}
 	bool safe = true;
+	//检查是否还有未执行完且标志尚未设置的进程
 	for (int j = 0; j<pcb.size() && safe; j++)
 	{
 		if (j == i) j++;
@@ -408,25 +409,7 @@ void test::restore_wait() {
 
 int main() {
 	test t;
-	//	for(int i=0;i<t.total_am.size();i++) cout<<t.total_am[i].amount<<endl;
-	t.init();//从文件中写入各进程的各资源的申请序列 
-			 /*以下为测试各进程的各资源申请序列是否写入成功，经下面的代码测试，写入成功。*/
-			 /*
-			 cout<<"能执行到这"<<endl;
-			 string process;
-			 string sour;
-			 process="P1";
-			 sour="B";
-			 cout<<t.get_sourcelist(sour,process)<<endl;//在对序列进行外赋值的时候出现错误
-			 */
-			 /*以下为测试PCB是否初始化成功(初始化成功)*/
-			 /*
-			 t.init_pcb();
-			 for(int i=0;i<t.pcb.size();i++)
-			 {
-			 cout<<t.pcb[i].name<<":"<<t.pcb[i].total_am[1]<<endl;
-			 }
-			 */
+	t.init();
 	t.init_pcb();
 	int option;
 	cout << "1、银行家算法      2、随机算法" << endl;

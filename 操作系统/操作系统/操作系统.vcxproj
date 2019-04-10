@@ -155,6 +155,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="先来先服务.cpp" />
     <ClCompile Include="第九章\9.3.1.cpp" />
     <ClCompile Include="第九章\9.3.2.cpp" />
     <ClCompile Include="第十章\10.3.1.cpp" />

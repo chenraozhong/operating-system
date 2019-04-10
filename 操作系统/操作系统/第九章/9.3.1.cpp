@@ -1,4 +1,3 @@
-
 #include"stdafx.h"
 #include<iostream>
 #include<vector>
@@ -36,10 +35,9 @@ public:
 	void init();//对主存空间进行初始化
 	void show();
 	void update_memory(int begin, job j);//在分配的时候更新主存
-
 };
 
-void Memory::update_memory(int begin, job j) {
+void Memory::update_memory(int begin, job j){
 	int i;
 	for (i = 0; i < memory_list.size(); i++) {
 		if (memory_list[i].begin == begin) break;
