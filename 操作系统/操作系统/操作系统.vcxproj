@@ -158,6 +158,7 @@
     <ClCompile Include="先来先服务.cpp" />
     <ClCompile Include="第九章\9.3.1.cpp" />
     <ClCompile Include="第九章\9.3.2.cpp" />
+    <ClCompile Include="第八章\银行家算法.cpp" />
     <ClCompile Include="第十章\10.3.1.cpp" />
     <ClCompile Include="银行家算法.cpp" />
   </ItemGroup>

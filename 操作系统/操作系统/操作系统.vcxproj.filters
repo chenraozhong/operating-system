@@ -56,5 +56,8 @@
     <ClCompile Include="先来先服务.cpp">
       <Filter>源文件\第七章</Filter>
     </ClCompile>
+    <ClCompile Include="第八章\银行家算法.cpp">
+      <Filter>源文件\第八章</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
